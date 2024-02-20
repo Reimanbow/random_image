@@ -34,6 +34,12 @@ class MyScaffold extends StatelessWidget {
         child: Placeholder(),
         //child: Image.network(url),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.refresh),
+        tooltip: "refresh image",
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
