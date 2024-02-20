@@ -49,8 +49,8 @@ class MyState extends State<MyStatefulWidget> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     url = getURL();
   }
 
@@ -106,9 +106,7 @@ class MyScaffold extends StatelessWidget {
             }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //MyStatefulWidget.of(context).changeURL();
-        },
+        onPressed: () {},
         child: const Icon(Icons.refresh),
         tooltip: "refresh image",
       ),
