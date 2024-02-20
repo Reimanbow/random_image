@@ -1,4 +1,6 @@
+import "dart:typed_data";
 import "package:flutter/material.dart";
+import "package:http/http.dart" as http;
 
 void main() => runApp(const MyApp());
 
@@ -33,11 +35,24 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class MyState extends State<MyStatefulWidget> {
-  String url = "https://source.unsplash.com/random";
+  late Future<Uint8List> url;
 
-  void changeURL() => setState(() {
-        url = "https://source.unsplash.com/random";
-      });
+  Future<Uint8List> getURL() async {
+    final response =
+        await http.get(Uri.parse("https://source.unsplash.com/random"));
+
+    if (response.statusCode == 200) {
+      return response.bodyBytes;
+    } else {
+      throw Exception("Error");
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    url = getURL();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +94,21 @@ class MyScaffold extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Image.network(
-          MyStatefulWidget.of(context).url,
-        ),
+        child: FutureBuilder(
+            future: MyStatefulWidget.of(context).url,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Image.memory(snapshot.data!);
+              } else if (snapshot.hasError) {
+                return const Text("Error");
+              }
+              return const CircularProgressIndicator();
+            }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          //MyStatefulWidget.of(context).changeURL();
+        },
         child: const Icon(Icons.refresh),
         tooltip: "refresh image",
       ),
